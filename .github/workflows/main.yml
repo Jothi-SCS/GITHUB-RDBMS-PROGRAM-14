@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout Student Code
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v4
 
       - name: Check answers.sql
         run: |
@@ -22,17 +22,9 @@ jobs:
             exit 1
           fi
 
-      - name: Start Oracle Database
+      - name: Validate PL/SQL Content
         run: |
-          echo "Setting up Oracle Database environment..."
-
-      - name: Run Test Script
-        run: |
-          echo "Testing PL/SQL output..."
-          # Execute SQL script check
-          grep -i "DECLARE" answers.sql || (echo "Missing DECLARE block" && exit 1)
-          grep -i "DBMS_OUTPUT" answers.sql || (echo "Missing DBMS_OUTPUT statement" && exit 1)
-
-      - name: Complete Autograding
-        run: |
-          echo "Autograding successfully passed!"
+          echo "Validating answers.sql content..."
+          grep -i "DECLARE" answers.sql || (echo "ERROR: Missing DECLARE keyword in answers.sql" && exit 1)
+          grep -i "DBMS_OUTPUT" answers.sql || (echo "ERROR: Missing DBMS_OUTPUT statement in answers.sql" && exit 1)
+         
